@@ -67,13 +67,25 @@ export const createMainWindow = (): BrowserWindow => {
       if (!modifierHash[input.key.toLocaleLowerCase()]) {
         // Hack to support SPACE and numpad numbers
         const key = input.key.toUpperCase();
-        const adjustedKey =
-          key === ' '
-            ? 'SPACE'
-            : modifierHash.iskeypad && !isNaN(key as any)
-              ? `NUMPAD${key}`
-              : key;
-        macroKeys.push(adjustedKey);
+
+        const deShiftedKey = input.shift ? revertShiftKey(key) : undefined;
+
+        // If shift is pressed, the we want the base value of the key instead
+        if (deShiftedKey && deShiftedKey !== key) {
+          macroKeys.push(deShiftedKey);
+        }
+        // Remap space
+        else if (key === ' ') {
+          macroKeys.push('SPACE');
+        }
+        // Ensure numpad keys are handled differently from normal digits
+        else if (modifierHash.iskeypad && !isNaN(key as any)) {
+          macroKeys.push(`NUMPAD${key}`);
+        }
+        // Everything else
+        else {
+          macroKeys.push(key);
+        }
       }
 
       mainWindow?.webContents.send('key-pressed', macroKeys);
@@ -102,6 +114,32 @@ export const createMainWindow = (): BrowserWindow => {
   });
 
   return mainWindow;
+};
+
+const revertShiftKey = (key: string): string | undefined => {
+  return {
+    '!': '1',
+    '@': '2',
+    '#': '3',
+    $: '4',
+    '%': '5',
+    '^': '6',
+    '&': '7',
+    '*': '8',
+    '(': '9',
+    ')': '0',
+    _: '-',
+    '+': '=',
+    '{': '[',
+    '}': ']',
+    ':': ';',
+    '"': "'",
+    '<': ',',
+    '>': '.',
+    '?': '/',
+    '~': '`',
+    '|': '\\',
+  }[key];
 };
 
 export const showOpenFileDialog = async (): Promise<string> => {
