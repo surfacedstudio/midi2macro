@@ -9,6 +9,7 @@ import {
   MacroActionLaunchApp,
   MacroActionTriggerShortcut,
 } from '../common/types';
+import path from 'path';
 const child_process = require('child_process');
 
 const { keyboard, Key, clipboard } = require('@nut-tree/nut-js');
@@ -35,7 +36,10 @@ const registerHandler = (channel: Channels, handler: IpcHandler) => {
   });
 };
 
-export const registerIpcHandlers = () => {
+export const registerIpcHandlers = (app: Electron.App) => {
+  const appDataPath = app.getPath('appData');
+  const macroFile = path.join(appDataPath, 'Midi2Macro', 'macros.json');
+
   registerHandler('ipc-example', async (input: unknown) => {
     return `IPC test: ${input}-pong`;
   });
@@ -55,18 +59,18 @@ export const registerIpcHandlers = () => {
   });
 
   registerHandler('load-macros', async () => {
-    macrosByNoteId = loadMacros('macros.json');
+    macrosByNoteId = loadMacros(macroFile);
     return macrosByNoteId;
   });
 
   registerHandler('assign-macro', async (action: MacroAction) => {
     macrosByNoteId[action.midiNote.id] = action;
-    await saveMacros(macrosByNoteId, 'macros.json');
+    await saveMacros(macrosByNoteId, macroFile);
   });
 
   registerHandler('delete-macro', async (action: MacroAction) => {
     delete macrosByNoteId[action.midiNote.id];
-    await saveMacros(macrosByNoteId, 'macros.json');
+    await saveMacros(macrosByNoteId, macroFile);
   });
 
   registerHandler('execute-macro', async (noteId: string) => {

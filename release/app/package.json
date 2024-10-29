@@ -1,6 +1,6 @@
 {
-  "name": "midi2macro",
-  "version": "1.0.2",
+  "name": "Midi2Macro",
+  "version": "1.0.3",
   "description": "Turn any MIDI controller into a Macro pad",
   "license": "MIT",
   "author": {

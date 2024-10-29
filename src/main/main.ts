@@ -23,7 +23,7 @@ class AppUpdater {
   }
 }
 
-registerIpcHandlers();
+registerIpcHandlers(app);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
