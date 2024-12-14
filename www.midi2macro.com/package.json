@@ -1,0 +1,66 @@
+{
+  "name": "midi2macro-ui",
+  "version": "0.1.0",
+  "description": "Front End for catsintech.com",
+  "private": true,
+  "dependencies": {
+    "@surfacedstudio/core": "^1.0.17",
+    "bootstrap": "^5.3.3",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.5",
+    "react-dom": "^18.3.1",
+    "react-helmet": "^6.1.0",
+    "react-router-dom": "^6.28.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^29.5.14",
+    "@types/react-helmet": "^6.1.11",
+    "import": "^0.0.6",
+    "react-snap": "^1.23.0",
+    "sass": "^1.80.6",
+    "typescript": "^5.6.3"
+  },
+  "scripts": {
+    "preinstall": "npm run co:login",
+    "co:login": "aws codeartifact login --tool npm --repository surfacedstudio --domain surfacedstudio --domain-owner 840751810341 --region ap-southeast-2 --namespace @surfacedstudio",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy": "yarn run build && node scripts/deploy.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "reactSnapshot": {
+    "include": [
+      "/about",
+      "/another/nested-path"
+    ],
+    "exclude": [
+      "/signup",
+      "/other-path/exclude-me/**"
+    ],
+    "snapshotDelay": 300
+  }
+}

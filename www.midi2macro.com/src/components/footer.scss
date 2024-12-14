@@ -1,0 +1,17 @@
+@import '../global.scss';
+
+.footer {
+  border-top: 1px solid $color-highlight;
+  background-color: $color-background-dark;
+  padding: 40px 0;
+}
+
+.footnote {
+  margin-top: 10px;
+  font-size: 0.8em;
+  color: #aaaaaa;
+
+  a {
+    color: #aaaaaa;
+  }
+}

@@ -1,0 +1,29 @@
+@import 'global.scss';
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  background-color: $color-background;
+  color: white;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  flex: 1;
+  padding: 50px 0;
+}
+
+.heading {
+  font-size: 1.2em;
+}
+
+.subtitle {
+  font-size: 0.7em;
+  color: #aaaaaa;
+}

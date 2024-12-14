@@ -1,0 +1,10 @@
+{
+  "hosted-zone:account=840751810341:domainName=catsintech.com:region=ap-southeast-2": {
+    "Id": "/hostedzone/Z078979443WL0VCJMEWD",
+    "Name": "catsintech.com."
+  },
+  "hosted-zone:account=840751810341:domainName=midi2macro.com:region=ap-southeast-2": {
+    "Id": "/hostedzone/Z002348630NDF49B3SH8U",
+    "Name": "midi2macro.com."
+  }
+}

@@ -1,0 +1,25 @@
+
+@import '../global.scss';
+
+.mainNav {
+  border-bottom: 1px solid $color-highlight;
+  background-color: $color-background-dark;
+
+  .dropdown-menu, .mainNav .dropdown-menu > * {
+    background-color: $color-background-dark;
+    color: white !important;
+  }
+
+  .dropdown-item:hover {
+    background-color: white;
+    color: #191a1c !important;
+  }
+
+  hr {
+    background-color: white !important;
+  }
+
+  .navbar-toggler {
+    color: white !important;
+  }
+}

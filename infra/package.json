@@ -1,0 +1,41 @@
+{
+  "name": "midi2macro-api",
+  "version": "1.0.0",
+  "description": "API for catsintech.com",
+  "private": true,
+  "bin": {
+    "cdk": "lib/cdk.ts"
+  },
+  "scripts": {
+    "build": "tsc && cdk synth",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy-dev": "rm -rf cdk.out && tsc && cdk deploy Midi2MacroStack --context environment=dev --parameters parameterName=value",
+    "deploy-prod": "rm -rf cdk.out && tsc && cdk deploy Midi2MacroStack --context environment=prod --parameters parameterName=value",
+    "test-root": "rm -rf cdk.out && tsc && node scripts/execute-lambda.js lambdas/root.ts root-event.js"
+  },
+  "author": {
+    "name": "Aleksandar Simovic <alexander.simovic@gmail.com>",
+    "url": "https://serverless.pub"
+  },
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@aws-cdk/aws-cloudfront": "^1.204.0",
+    "@aws-cdk/aws-cloudfront-origins": "^1.204.0",
+    "@aws-cdk/aws-s3": "^1.204.0",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "*",
+    "@types/uuid": "*",
+    "aws-cdk": "*",
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0",
+    "esbuild": "*",
+    "typescript": "~5.1.6"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.538.0",
+    "@aws-sdk/lib-dynamodb": "^3.538.0",
+    "@surfacedstudio/core": "^1.0.21",
+    "uuid": "*"
+  }
+}
