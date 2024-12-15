@@ -103,6 +103,10 @@ export const registerIpcHandlers = (app: Electron.App) => {
       case 'Trigger Shortcut': {
         const keys = (macro as MacroActionTriggerShortcut).keys;
         const keyMap: Record<string, string[]> = {
+          ARROWRIGHT: [Key.Right],
+          ARROWUP: [Key.Up],
+          ARROWLEFT: [Key.Left],
+          ARROWDOWN: [Key.Down],
           SHIFT: [Key.LeftShift, Key.RightShift],
           ALT: [Key.LeftAlt, Key.RightAlt],
           CONTROL: [Key.LeftControl, Key.RightControl],

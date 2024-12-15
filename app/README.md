@@ -8,6 +8,8 @@ Extract `dependencies.zip` into a local `./dependencies` folder.
 
 The @nut-tree module will be copied into your `node_modules` folder post install because it doesn't work when you add it into the package.json - and yarn will clean out anything in `node_modules` that it doesn't own.
 
+Ensure the `./release/app/package.json` file does NOT reference @nut-tree-nut-js.
+
 Run `yarn`
 
 Run `yarn start` to start the application.

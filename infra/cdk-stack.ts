@@ -43,8 +43,9 @@ export class Midi2MacroStack extends Stack {
       env: { account: props.account, region: props.region },
     });
 
-    const apiSubdomain = props.environment !== "prod" ? "api-dev" : "api";
-    const websiteSubdomain = props.environment !== "prod" ? "dev" : "www";
+    const isProd = props.environment === "prod";
+    const apiSubdomain = isProd ? "api" : "api-dev";
+    const websiteSubdomain = isProd ? "www" : "dev";
 
     // Set a default parameter name
     // @ts-ignore
@@ -54,10 +55,10 @@ export class Midi2MacroStack extends Stack {
     });
 
     const bucket = new s3.Bucket(this, "Midi2MacroWebsiteBucket", {
-      bucketName: "midi2macro.com",
+      bucketName: `www.${props.domainName}`,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       publicReadAccess: false,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
     });
 
     const redirectFunction = new cloudfront.Function(this, "Function", {
@@ -87,16 +88,18 @@ export class Midi2MacroStack extends Stack {
           // OAI allows S3 bucket to be private and not enabled for website hosting
           cloudfrontOrigins.S3BucketOrigin.withOriginAccessIdentity(bucket),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
-        // Redirect non www to www
-        functionAssociations: [
-          {
-            function: redirectFunction,
-            eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
-          },
-        ],
+        // Redirect root domain to www in prod
+        functionAssociations: isProd
+          ? [
+              {
+                function: redirectFunction,
+                eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+              },
+            ]
+          : undefined,
       },
       defaultRootObject: "index.html",
-      domainNames: [`${websiteSubdomain}.${props.domainName}`],
+      domainNames: [`${websiteSubdomain}.${props.domainName}`, `${props.domainName}`],
       certificate: usEast1Certificate,
       errorResponses: [
         {
@@ -114,11 +117,20 @@ export class Midi2MacroStack extends Stack {
       domainName: props.domainName,
     });
 
-    new route53.ARecord(this, "wwwDNS", {
+    new route53.ARecord(this, "web-subdomain-DNS", {
       zone: zone,
       recordName: websiteSubdomain,
       target: route53.RecordTarget.fromAlias(new route53_targets.CloudFrontTarget(distribution)),
     });
+
+    // In prod we redirect root domain to www so also need to point DNS at Cloudfront
+    if (isProd) {
+      new route53.ARecord(this, "web-subdomain-redirect-DNS", {
+        zone: zone,
+        recordName: undefined,
+        target: route53.RecordTarget.fromAlias(new route53_targets.CloudFrontTarget(distribution)),
+      });
+    }
 
     // new s3Deploy.BucketDeployment(this, "TecoWebsiteBucketDeployment", {
     //   sources: [s3Deploy.Source.asset(path.join(__dirname, "../website/dist"))],
