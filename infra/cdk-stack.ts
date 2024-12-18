@@ -26,8 +26,14 @@ interface StackProps extends cdk.StackProps {
   environment: "prod" | "dev";
   account: string;
   region: string;
+  isProd: boolean;
+
   // www.midi2macro.com and api{-dev}.midi2macro.com will be added to R53 records
   domainName: string;
+  websiteSubdomain: string;
+  apiSubdomain: string;
+  rootBucketExists: boolean;
+  webBucketExists: boolean;
   // wildcard SSL cert for domain
   // Cloudfront needs us-east-1
   // Api Gateway needs to use ap-southeast-2
@@ -43,9 +49,7 @@ export class Midi2MacroStack extends Stack {
       env: { account: props.account, region: props.region },
     });
 
-    const isProd = props.environment === "prod";
-    const apiSubdomain = isProd ? "api" : "api-dev";
-    const websiteSubdomain = isProd ? "www" : "dev";
+    const { isProd, domainName, websiteSubdomain, apiSubdomain, rootBucketExists, webBucketExists } = props;
 
     // Set a default parameter name
     // @ts-ignore
@@ -54,12 +58,24 @@ export class Midi2MacroStack extends Stack {
       default: "default-value",
     });
 
-    const bucket = new s3.Bucket(this, "Midi2MacroWebsiteBucket", {
-      bucketName: `www.${props.domainName}`,
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-      publicReadAccess: false,
-      removalPolicy: cdk.RemovalPolicy.RETAIN_ON_UPDATE_OR_DELETE,
-    });
+    if (isProd && !rootBucketExists) {
+      new s3.Bucket(this, "Midi2MacroWebsiteRootBucket", {
+        bucketName: domainName,
+        blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+        publicReadAccess: false,
+        removalPolicy: cdk.RemovalPolicy.RETAIN,
+      });
+    }
+
+    const websiteBucketName = `${websiteSubdomain}.${domainName}`;
+    const bucket = webBucketExists
+      ? s3.Bucket.fromBucketName(this, "Midi2MacroWebsiteBucket", websiteBucketName)
+      : new s3.Bucket(this, "Midi2MacroWebsiteBucket", {
+          bucketName: websiteBucketName,
+          blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+          publicReadAccess: false,
+          removalPolicy: cdk.RemovalPolicy.RETAIN,
+        });
 
     const redirectFunction = new cloudfront.Function(this, "Function", {
       code: cloudfront.FunctionCode.fromFile({ filePath: path.join(__dirname, "src/functions/redirect-to-www.js") }),
@@ -80,13 +96,16 @@ export class Midi2MacroStack extends Stack {
       props.apSoutheast2CertificateArn
     );
 
+    const oai = new cloudfront.OriginAccessIdentity(this, "OAI");
+    bucket.grantRead(oai);
+
     const distribution = new cloudfront.Distribution(this, "Midi2MacroWebsiteDistribution", {
       defaultBehavior: {
         allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
         compress: true,
         origin:
           // OAI allows S3 bucket to be private and not enabled for website hosting
-          cloudfrontOrigins.S3BucketOrigin.withOriginAccessIdentity(bucket),
+          cloudfrontOrigins.S3BucketOrigin.withOriginAccessIdentity(bucket, { originAccessIdentity: oai }),
         viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
         // Redirect root domain to www in prod
         functionAssociations: isProd

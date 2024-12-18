@@ -10,8 +10,8 @@
     "build": "tsc && cdk synth",
     "watch": "tsc -w",
     "cdk": "cdk",
-    "deploy-dev": "rm -rf cdk.out && tsc && cdk deploy Midi2MacroStack --context environment=dev --parameters parameterName=value",
-    "deploy-prod": "rm -rf cdk.out && tsc && cdk deploy Midi2MacroStack --context environment=prod --parameters parameterName=value",
+    "deploy-dev": "rm -rf cdk.out && tsc && cdk deploy Midi2MacroStack --context environment=dev --parameters parameterName=value && cd ../www.midi2macro.com && yarn deploy-dev",
+    "deploy-prod": "rm -rf cdk.out && tsc && cdk deploy Midi2MacroStack --context environment=prod --parameters parameterName=value && cd ../www.midi2macro.com && yarn deploy-prod",
     "test-root": "rm -rf cdk.out && tsc && node scripts/execute-lambda.js lambdas/root.ts root-event.js"
   },
   "author": {
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.538.0",
+    "@aws-sdk/client-s3": "^3.713.0",
     "@aws-sdk/lib-dynamodb": "^3.538.0",
     "@surfacedstudio/core": "^1.0.21",
     "uuid": "*"

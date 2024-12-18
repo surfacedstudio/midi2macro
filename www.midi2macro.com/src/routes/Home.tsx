@@ -21,14 +21,9 @@ export const HomeRoute = () => {
 
   return (
     <App>
-      <img
-        src="/midi2macro-logo.png"
-        className="midi2macro-logo"
-        width="320"
-        alt="logo"
-      />
-      <div className="heading">Cats In Tech 2</div>
-      <div className="subtitle">Smart Tools for Creative People</div>
+      <img src="/midi2macro-logo.png" className="midi2macro-logo" width="320" alt="logo" />
+      <div className="heading">Midi2Macro</div>
+      <div className="subtitle">Automate ANY Midi Device</div>
       <div>{data}</div>
     </App>
   );

@@ -5,13 +5,19 @@ import { ContactRoute } from "./routes/Contact";
 import { HomeRoute } from "./routes/Home";
 import { ErrorRoute } from "./routes/Error";
 import reportWebVitals from "./reportWebVitals";
+import MarketingPage from "./MarketingPage";
+
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomeRoute />,
+    element: <MarketingPage />,
     errorElement: <ErrorRoute />,
   },
   {

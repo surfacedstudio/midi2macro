@@ -4,7 +4,11 @@
   "description": "Front End for catsintech.com",
   "private": true,
   "dependencies": {
-    "@surfacedstudio/core": "^1.0.17",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@fontsource/roboto": "^5.1.0",
+    "@mui/icons-material": "^6.2.1",
+    "@mui/material": "^6.2.1",
     "bootstrap": "^5.3.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.5",
@@ -26,13 +30,12 @@
     "typescript": "^5.6.3"
   },
   "scripts": {
-    "preinstall": "npm run co:login",
-    "co:login": "aws codeartifact login --tool npm --repository surfacedstudio --domain surfacedstudio --domain-owner 840751810341 --region ap-southeast-2 --namespace @surfacedstudio",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "yarn run build && node scripts/deploy.js"
+    "deploy-dev": "yarn run build && node scripts/deploy.js --environment=dev",
+    "deploy-prod": "yarn run build && node scripts/deploy.js --environment=prod"
   },
   "eslintConfig": {
     "extends": [
